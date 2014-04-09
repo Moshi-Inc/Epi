@@ -50,4 +50,3 @@ function getTemplate( ) {
     $template = new EpiTemplate();
     return $template;
 }
-
