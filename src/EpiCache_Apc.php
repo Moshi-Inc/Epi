@@ -1,23 +1,20 @@
 <?php
-class EpiCache_Apc extends EpiCache {
+class EpiCache_Apc implements EpiCacheInterface {
     private $expiry = null;
     public function __construct( $params = array( ) ) {
         $this->expiry = !empty( $params[ 0 ] ) ? $params[ 0 ] : 3600;
     }
-    public function delete( $key ) {
+    public function delete( $key = null ) {
         if ( empty( $key ) ) {
             return null;
         }
-        return apc_delete( $key );
+        return apc_delete( $key = null );
     }
-    public function get( $key ) {
+    public function get( $key = null ) {
         if ( empty( $key ) ) {
             return null;
-        } else if ( $getEpiCache = $this->getEpiCache( $key ) ) {
-            return $getEpiCache;
         } else {
             $value = apc_fetch( $key );
-            $this->setEpiCache( $key, $value );
             return $value;
         }
     }
@@ -28,7 +25,6 @@ class EpiCache_Apc extends EpiCache {
         if ( empty( $key ) || $value === null )
             return false;
         apc_store( $key, $value, $expiry );
-        $this->setEpiCache( $key, $value );
         return true;
     }
 }
