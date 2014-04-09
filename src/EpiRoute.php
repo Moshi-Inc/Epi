@@ -9,8 +9,13 @@ class EpiRoute {
     const httpPost = 'POST';
     const httpPut = 'PUT';
     const httpDelete = 'DELETE';
+    const httpHead = 'HEAD';
     public function get( $route, $callback, $isApi = false ) {
         $this->addRoute( $route, $callback, self::httpGet, $isApi );
+        $this->addRoute( $route, array(
+             $this,
+            'void' 
+        ), self::httpHead, $isApi );
     }
     public function post( $route, $callback, $isApi = false ) {
         $this->addRoute( $route, $callback, self::httpPost, $isApi );
@@ -38,6 +43,8 @@ class EpiRoute {
             elseif ( isset( $route[ 'function' ] ) )
                 $this->$method( $route[ 'path' ], $route[ 'function' ] );
         }
+    }
+    public function void( ) {
     }
     public function run( $route = false, $httpMethod = null ) {
         if ( $route === false )

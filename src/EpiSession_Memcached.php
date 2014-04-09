@@ -1,18 +1,23 @@
 <?php
 class EpiSession_Memcached implements EpiSessionInterface {
     private static $connected = false;
+    private $memcached = false;
     private $key = null;
     private $store = null;
+    private $host = null;
+    private $port = null;
+    private $compress = null;
+    private $expiry = null;
     public function __construct( $params = array( ) ) {
         if ( empty( $_COOKIE[ EpiSession::COOKIE ] ) ) {
-            $cookieVal = md5( uniqid( rand(), true ) );
-            setcookie( EpiSession::COOKIE, $cookieVal, time() + 1209600, '/' );
-            $_COOKIE[ EpiSession::COOKIE ] = $cookieVal;
+            $key = md5( uniqid( rand(), true ) );
+            setcookie( EpiSession::COOKIE, $key, time() + 1209600, '/' );
+            $_COOKIE[ EpiSession::COOKIE ] = $key;
         }
-        $this->host = !empty( $params[ 0 ] ) ? $params[ 0 ] : 'localhost';
-        $this->port = !empty( $params[ 1 ] ) ? $params[ 1 ] : 11211;
-        $this->compress = !empty( $params[ 2 ] ) ? $params[ 2 ] : 0;
-        $this->expiry = !empty( $params[ 3 ] ) ? $params[ 3 ] : 3600;
+        $this->host     = !empty( $params[ 0 ] ) ? $params[ 0 ] : 'localhost';
+        $this->port     = !empty( $params[ 1 ] ) ? $params[ 1 ] : 11211;
+        $this->compress = isset( $params[ 2 ] ) ? $params[ 2 ] : 0;
+        $this->expiry   = isset( $params[ 3 ] ) ? $params[ 3 ] : 3600;
     }
     public function end( ) {
         if ( !$this->connect() )
@@ -35,7 +40,7 @@ class EpiSession_Memcached implements EpiSessionInterface {
         if ( !$this->connect() || empty( $key ) )
             return false;
         $this->store[ $key ] = $value;
-        $this->memcached->set( $this->key, $this->store );
+        $this->memcached->set( $this->key, $this->store, $this->expiry );
         return $value;
     }
     private function connect( $params = null ) {
@@ -45,7 +50,7 @@ class EpiSession_Memcached implements EpiSessionInterface {
             $this->memcached = new Memcached;
             if ( $this->memcached->addServer( $this->host, $this->port ) ) {
                 self::$connected = true;
-                $this->key       = empty( $key ) ? $_COOKIE[ EpiSession::COOKIE ] : $key;
+                $this->key       = $_COOKIE[ EpiSession::COOKIE ];
                 $this->store     = $this->getAll();
                 return true;
             } else {
