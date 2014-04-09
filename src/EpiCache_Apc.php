@@ -32,4 +32,3 @@ class EpiCache_Apc extends EpiCache {
         return true;
     }
 }
-?>
