@@ -24,36 +24,41 @@ class EpiSession_Memcached implements EpiSessionInterface {
     }
 
     public function end() {
-	if (!$this->connect())
+	if (!$this->connect()) {
 	    return;
+	}
 	$this->memcached->delete($this->key);
 	$this->store = null;
 	setcookie(EpiSession::COOKIE, null, time() - 86400);
     }
 
     public function get($key = null) {
-	if (!$this->connect() || empty($key) || !isset($this->store[$key]))
+	if (!$this->connect() || empty($key) || !isset($this->store[$key])) {
 	    return false;
+	}
 	return $this->store[$key];
     }
 
     public function getAll() {
-	if (!$this->connect())
+	if (!$this->connect()) {
 	    return;
+	}
 	return $this->memcached->get($this->key);
     }
 
     public function set($key = null, $value = null) {
-	if (!$this->connect() || empty($key))
+	if (!$this->connect() || empty($key)) {
 	    return false;
+	}
 	$this->store[$key] = $value;
 	$this->memcached->set($this->key, $this->store, $this->expiry);
 	return $value;
     }
 
     private function connect($params = null) {
-	if (self::$connected)
+	if (self::$connected) {
 	    return true;
+	}
 	if (class_exists('Memcached')) {
 	    $this->memcached = new Memcached;
 	    if ($this->memcached->addServer($this->host, $this->port)) {
