@@ -33,7 +33,7 @@ class EpiTemplate {
     }
 
     public function json($data) {
-	if ($retval = json_encode($data)) {
+	if ($retval = json_encode($data)) { // TODO Find out if assigment is intended
 	    return $retval;
 	} else {
 	    $dataDump = var_export($dataDump, 1);
@@ -52,8 +52,9 @@ class EpiTemplate {
 
 function getTemplate() {
     static $template;
-    if ($template)
+    if ($template) {
 	return $template;
+    }
     $template = new EpiTemplate();
     return $template;
 }

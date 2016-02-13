@@ -20,8 +20,9 @@ class EpiDebug {
 	$groups = array();
 	foreach ($this->messages as $module => $messages) {
 	    $out .= str_repeat('~', ( $rowWidth / 2 ) - ( ( strlen($module) + 2 ) / 2 )) . " {$module} " . str_repeat('~', ( $rowWidth / 2 ) - ( ( strlen($module) + 2 ) / 2 )) . "\n";
-	    foreach ($messages as $message)
+	    foreach ($messages as $message) {
 		$out .= '| ' . $message . str_repeat(' ', ( $col1Width - strlen($message))) . " |\n";
+	    }
 	}
 	return $out;
     }
@@ -30,7 +31,8 @@ class EpiDebug {
 
 function getDebug() {
     static $debug;
-    if (!$debug)
+    if (!$debug) {
 	$debug = new EpiDebug();
+    }
     return $debug;
 }

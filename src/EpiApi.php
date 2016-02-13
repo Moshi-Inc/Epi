@@ -11,26 +11,30 @@ class EpiApi {
 
     public function get($route, $callback, $visibility = self::internal) {
 	$this->addRoute($route, $callback, EpiRoute::httpGet);
-	if ($visibility === self::external)
+	if ($visibility === self::external) {
 	    getRoute()->get($route, $callback, true);
+	}
     }
 
     public function post($route, $callback, $visibility = self::internal) {
 	$this->addRoute($route, $callback, EpiRoute::httpPost);
-	if ($visibility === self::external)
+	if ($visibility === self::external) {
 	    getRoute()->post($route, $callback, true);
+	}
     }
 
     public function put($route, $callback, $visibility = self::internal) {
 	$this->addRoute($route, $callback, EpiRoute::httpPut);
-	if ($visibility === self::external)
+	if ($visibility === self::external) {
 	    getRoute()->put($route, $callback, true);
+	}
     }
 
     public function delete($route, $callback, $visibility = self::internal) {
 	$this->addRoute($route, $callback, EpiRoute::httpDelete);
-	if ($visibility === self::external)
+	if ($visibility === self::external) {
 	    getRoute()->delete($route, $callback, true);
+	}
     }
 
     public function invoke($route, $httpMethod = EpiRoute::httpGet, $params = array()) {
@@ -41,8 +45,9 @@ class EpiApi {
 	    $GLOBALS[$type] = $value;
 	}
 	$retval = call_user_func_array($routeDef['callback'], $routeDef['args']);
-	foreach ($tmps as $type => $value)
+	foreach ($tmps as $type => $value) {
 	    $GLOBALS[$type] = $value;
+	}
 	return $retval;
     }
 
@@ -54,16 +59,18 @@ class EpiApi {
 		if ($httpMethod != $def['httpMethod']) {
 		    continue;
 		} else if (is_array($def['callback']) && method_exists($def['callback'][0], $def['callback'][1])) {
-		    if (Epi::getSetting('debug'))
+		    if (Epi::getSetting('debug')) {
 			getDebug()->addMessage(__CLASS__, sprintf('Matched %s : %s : %s : %s', $httpMethod, $this->route, json_encode($def['callback']), json_encode($arguments)));
+		    }
 		    return array(
 			'callback' => $def['callback'],
 			'args' => $arguments,
 			'postprocess' => true
 		    );
 		} else if (function_exists($def['callback'])) {
-		    if (Epi::getSetting('debug'))
+		    if (Epi::getSetting('debug')) {
 			getDebug()->addMessage(__CLASS__, sprintf('Matched %s : %s : %s : %s', $httpMethod, $this->route, json_encode($def['callback']), json_encode($arguments)));
+		    }
 		    return array(
 			'callback' => $def['callback'],
 			'args' => $arguments,
@@ -89,7 +96,8 @@ class EpiApi {
 
 function getApi() {
     static $api;
-    if (!$api)
+    if (!$api) {
 	$api = new EpiApi();
+    }
     return $api;
 }

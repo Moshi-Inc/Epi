@@ -12,8 +12,9 @@ class Epi {
 	}
 	$args = func_get_args();
 	if (!empty($args)) {
-	    foreach ($args as $arg)
+	    foreach ($args as $arg) {
 		self::loadDependency($arg);
+	    }
 	}
     }
 
@@ -40,12 +41,14 @@ class Epi {
     private static function loadDependency($dep) {
 	$value = isset(self::$manifest[$dep]) ? self::$manifest[$dep] : $dep;
 	if (!is_array($value)) {
-	    if (!isset(self::$included[$value]))
+	    if (!isset(self::$included[$value])) {
 		include( self::getPath('base') . "/{$value}" );
+	    }
 	    self::$included[$value] = 1;
 	} else {
-	    foreach ($value as $d)
+	    foreach ($value as $d) {
 		self::loadDependency($d);
+	    }
 	}
     }
 

@@ -17,8 +17,9 @@ class EpiCache_Memcached implements EpiCacheInterface {
     }
 
     public function delete($key = null) {
-	if (!$this->connect() || empty($key))
+	if (!$this->connect() || empty($key)) {
 	    return false;
+	}
 	return $this->memcached->delete($key);
     }
 
@@ -32,22 +33,25 @@ class EpiCache_Memcached implements EpiCacheInterface {
     }
 
     public function set($key = null, $value = null, $ttl = null) {
-	if (!$this->connect() || empty($key) || $value === null)
+	if (!$this->connect() || empty($key) || $value === null) {
 	    return false;
+	}
 	$expiry = $ttl === null ? $this->expiry : $ttl;
 	$this->memcached->set($key, $value, $expiry);
 	return true;
     }
 
     private function connect() {
-	if (self::$connected === true)
+	if (self::$connected === true) {
 	    return true;
+	}
 	if (class_exists('Memcached')) {
 	    $this->memcached = new Memcached;
-	    if ($this->memcached->addServer($this->host, $this->port))
+	    if ($this->memcached->addServer($this->host, $this->port)) {
 		return self::$connected = true;
-	    else
+	    } else {
 		EpiException::raise(new EpiCacheMemcacheConnectException('Could not connect to memcache server'));
+	    }
 	}
 	EpiException::raise(new EpiCacheMemcacheClientDneException('No memcache client exists'));
     }

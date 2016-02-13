@@ -27,10 +27,11 @@ class EpiLogger {
     }
 
     private function log($description, $severity, $exception = null) {
-	if ($exception instanceof Exception)
+	if ($exception instanceof Exception) {
 	    $additional = $this->parseException($exception);
-	else
+	} else {
 	    $additional = '';
+	}
 	error_log("{severity:{$severity}, description:\"{$description}\", additional:{$additional}}");
     }
 
@@ -38,8 +39,9 @@ class EpiLogger {
 
 function getLogger() {
     static $logger;
-    if ($logger)
+    if ($logger) {
 	return $logger;
+    }
     $logger = new EpiLogger();
     return $logger;
 }

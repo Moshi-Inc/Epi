@@ -11,8 +11,9 @@ class EpiSession_Apc implements EpiSessionInterface {
     }
 
     public function get($key = null) {
-	if (empty($key) || !isset($this->store[$key]))
+	if (empty($key) || !isset($this->store[$key])) {
 	    return false;
+	}
 	return $this->store[$key];
     }
 
@@ -21,18 +22,21 @@ class EpiSession_Apc implements EpiSessionInterface {
     }
 
     public function set($key = null, $value = null) {
-	if (empty($key))
+	if (empty($key)) {
 	    return false;
+	}
 	$this->store[$key] = $value;
 	apc_store($this->key, $this->store);
 	return $value;
     }
 
     public function __construct($params = null) {
-	if (!empty($params))
+	if (!empty($params)) {
 	    $key = array_shift($params);
-	if (empty($key) && empty($_COOKIE[EpiSession::COOKIE]))
+	}
+	if (empty($key) && empty($_COOKIE[EpiSession::COOKIE])) {
 	    setcookie(EpiSession::COOKIE, md5(uniqid(rand(), true)), time() + 1209600, '/');
+	}
 	$this->key = empty($key) ? $_COOKIE[EpiSession::COOKIE] : $key;
 	$this->store = $this->getAll();
     }

@@ -15,8 +15,9 @@ class EpiDatabase {
     public static function getInstance($type, $name, $host = 'localhost', $user = 'root', $pass = '', $port = 3306) {
 	$args = func_get_args();
 	$hash = md5(implode('~', $args));
-	if (isset(self::$instances[$hash]))
+	if (isset(self::$instances[$hash])) {
 	    return self::$instances[$hash];
+	}
 
 	self::$instances[$hash] = new EpiDatabase();
 	self::$instances[$hash]->_type = $type;
@@ -32,10 +33,11 @@ class EpiDatabase {
 	$this->init();
 	try {
 	    $sth = $this->prepare($sql, $params);
-	    if (preg_match('/insert/i', $sql))
+	    if (preg_match('/insert/i', $sql)) {
 		return $this->dbh->lastInsertId();
-	    else
+	    } else {
 		return $sth->rowCount();
+	    }
 	} catch (PDOException $e) {
 	    EpiException::raise(new EpiDatabaseQueryException("Query error: {$e->getMessage()} - {$sql}"));
 	    return false;
@@ -98,8 +100,9 @@ class EpiDatabase {
     }
 
     private function init() {
-	if ($this->dbh)
+	if ($this->dbh) {
 	    return;
+	}
 
 	try {
 	    $this->dbh = new PDO($this->_type . ':host=' . $this->_host . ';dbname=' . $this->_name . ';port=' . $this->_port, $this->_user, $this->_pass);
@@ -113,8 +116,9 @@ class EpiDatabase {
 
 function getDatabase() {
     $employ = extract(EpiDatabase::employ());
-    if (empty($type) || empty($name) || empty($host) || empty($user))
+    if (empty($type) || empty($name) || empty($host) || empty($user)) {
 	EpiException::raise(new EpiCacheTypeDoesNotExistException('Could not determine which database module to load', 404));
-    else
+    } else {
 	return EpiDatabase::getInstance($type, $name, $host, $user, $pass, $port);
+    }
 }

@@ -12,8 +12,9 @@ class EpiConfig {
     public function load() {
 	$args = func_get_args();
 	foreach ($args as $file) {
-	    if ($file[0] != '.' && $file[0] != '/')
+	    if ($file[0] != '.' && $file[0] != '/') {
 		$file = Epi::getPath('config') . "/{$file}";
+	    }
 	    if (!file_exists($file)) {
 		EpiException::raise(new EpiConfigException("Config file ({$file}) does not exist"));
 		break;
@@ -23,20 +24,23 @@ class EpiConfig {
 		if (!is_array($value)) {
 		    $this->config->$key = $value;
 		} else {
-		    if (!isset($this->config->$key))
+		    if (!isset($this->config->$key)) {
 			$this->config->$key = new stdClass;
-		    foreach ($value as $innerKey => $innerValue)
+		    }
+		    foreach ($value as $innerKey => $innerValue) {
 			$this->config->$key->$innerKey = $innerValue;
+		    }
 		}
 	    }
 	}
     }
 
     public function get($key = null) {
-	if (!empty($key))
+	if (!empty($key)) {
 	    return isset($this->config->$key) ? $this->config->$key : null;
-	else
+	} else {
 	    return $this->config;
+	}
     }
 
     public function set($key, $val) {
@@ -44,8 +48,9 @@ class EpiConfig {
     }
 
     public static function getInstance() {
-	if (self::$instance)
+	if (self::$instance) {
 	    return self::$instance;
+	}
 	self::$instance = new EpiConfig;
 	return self::$instance;
     }

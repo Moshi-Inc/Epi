@@ -28,8 +28,9 @@ class EpiCache_Apc implements EpiCacheInterface {
 	if (empty($expiry)) {
 	    $expiry = $this->expiry;
 	}
-	if (empty($key) || $value === null)
+	if (empty($key) || $value === null) {
 	    return false;
+	}
 	apc_store($key, $value, $expiry);
 	return true;
     }

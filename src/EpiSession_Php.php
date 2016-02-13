@@ -11,21 +11,24 @@ class EpiSession_Php implements EpiSessionInterface {
     }
 
     public function get($key = null) {
-	if (empty($key) || !isset($_SESSION[$key]))
+	if (empty($key) || !isset($_SESSION[$key])) {
 	    return false;
+	}
 	return $_SESSION[$key];
     }
 
     public function set($key = null, $value = null) {
-	if (empty($key))
+	if (empty($key)) {
 	    return false;
+	}
 	$_SESSION[$key] = $value;
 	return $value;
     }
 
     public function __construct() {
-	if (!session_id())
+	if (!session_id()) {
 	    session_start();
+	}
     }
 
 }
